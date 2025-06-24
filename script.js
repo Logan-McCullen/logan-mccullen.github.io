@@ -1,162 +1,207 @@
-/* script.js */
-const questions = [
-  {
-    text: 'I feel energized after social gatherings.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  },
-  {
-    text: 'I like planning things in advance.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  },
-  {
-    text: 'I enjoy trying new and different activities.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  },
-  {
-    text: 'I often reflect on my feelings.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  },
-  {
-    text: 'I keep my space tidy and organized.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  },
-  {
-    text: 'I enjoy working on teams.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  },
-  {
-    text: 'I get anxious when facing uncertainty.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  },
-  {
-    text: 'I prefer tasks that require creativity.',
-    options: [
-      { text: 'Strongly Disagree', value: 1 },
-      { text: 'Disagree', value: 2 },
-      { text: 'Neutral', value: 3 },
-      { text: 'Agree', value: 4 },
-      { text: 'Strongly Agree', value: 5 }
-    ]
-  }
-];
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.getElementById("darkModeToggle");
+  const symbol = document.getElementById("darkSymbol");
+  const quizContainer = document.getElementById("quiz-container");
+  const progressBar = document.querySelector(".progress-bar");
+  const progressFill = document.getElementById("progressFill");
+  const startScreen = document.getElementById("start-screen");
+  const resultSection = document.getElementById("result-section");
+  const navButtons = document.getElementById("quiz-nav-buttons");
+  const nextButton = document.getElementById("nextButton");
+  const backButton = document.getElementById("backButton");
 
-const groups = [
-  { label: 'The Analyst', summary: 'Logical and introspective with a focus on details.' },
-  { label: 'The Builder', summary: 'Practical and organized, prefers clear plans.' },
-  { label: 'The Dreamer', summary: 'Creative and imaginative, enjoys new ideas.' },
-  { label: 'The Socializer', summary: 'Outgoing and team-oriented, energized by others.' }
-];
+  let current = 0;
+  let answers = [];
 
-let currentQuestion = 0;
-let score = 0;
+  const questions = [
+    "You enjoy being in large groups.",
+    "You like planning your schedule in advance.",
+    "You’re comfortable with sudden changes.",
+    "You prefer logic over emotions.",
+    "You thrive on routine and structure.",
+    "You make decisions quickly.",
+    "You feel energized after socializing.",
+    "You often question rules and norms.",
+    "You enjoy solving complex problems.",
+    "You get overwhelmed when plans change.",
+    "You work better with structure.",
+    "You seek new challenges often."
+  ];
 
-const container = document.getElementById('quiz-container');
-const startButton = document.getElementById('startButton');
-const resultSection = document.getElementById('result-section');
-const resultTitle = document.getElementById('result-title');
-const resultText = document.getElementById('result-text');
-const grid = document.getElementById('groups-grid');
+  const resultGroups = [
+    ["The Analyzer", "Detail-oriented and introspective thinker."],
+    ["The Planner", "Organized and thoughtful decision-maker."],
+    ["The Adaptive", "Balances control with openness to change."],
+    ["The Connector", "Empathetic and expressive team builder."],
+    ["The Explorer", "Adventurous, curious, thrives on change."],
+    ["The Visionary", "Future-focused and creatively driven."],
+    ["The Architect", "Strategic thinker who builds ideas logically."],
+    ["The Guardian", "Steady, dependable, and careful with decisions."],
+    ["The Idealist", "Driven by values and a sense of purpose."],
+    ["The Realist", "Grounded and practical in everyday life."],
+    ["The Maverick", "Rebellious, independent, and challenge-loving."],
+    ["The Mediator", "Peace-seeking and diplomatic problem solver."]
+  ];
 
-startButton.addEventListener('click', startQuiz);
+  toggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    symbol.textContent = document.body.classList.contains("dark-mode") ? "☾" : "☀";
+  });
 
-function startQuiz() {
-  currentQuestion = 0;
-  score = 0;
-  resultSection.classList.add('hidden');
-  container.classList.remove('center');
-  showQuestion();
-}
-
-function showQuestion() {
-  const q = questions[currentQuestion];
-  container.innerHTML = `
-    <div class="progress">Question ${currentQuestion + 1} of ${questions.length}</div>
-    <div class="question">${q.text}</div>
-    <ul class="options">
-      ${q.options.map(o => `<li><label><input type="radio" name="option" value="${o.value}"> ${o.text}</label></li>`).join('')}
-    </ul>
-    <button id="nextButton" class="button">${currentQuestion === questions.length - 1 ? 'Submit' : 'Next'}</button>
-  `;
-  document.getElementById('nextButton').addEventListener('click', nextQuestion);
-}
-
-function nextQuestion() {
-  const selected = document.querySelector('input[name="option"]:checked');
-  if (!selected) {
-    alert('Please select an option.');
-    return;
-  }
-  score += parseInt(selected.value, 10);
-  currentQuestion++;
-  if (currentQuestion < questions.length) {
+  document.getElementById("startButton").onclick = () => {
+    current = 0;
+    answers = [];
+    startScreen.classList.add("hidden");
+    quizContainer.classList.remove("hidden");
+    progressBar.classList.remove("hidden");
+    navButtons.classList.remove("hidden");
+    navButtons.style.visibility = "visible";
+    nextButton.classList.remove("hidden");
+    backButton.classList.add("hidden");
     showQuestion();
-  } else {
-    showResult();
+  };
+
+  document.getElementById("retakeButton").onclick = () => {
+    resultSection.classList.add("hidden");
+    startScreen.classList.remove("hidden");
+    document.getElementById("groups-grid").classList.add("hidden");
+  };
+
+  document.getElementById("historyButton").onclick = () => {
+    const table = document.getElementById("history-table");
+    table.classList.toggle("hidden");
+    buildHistoryTable();
+  };
+
+  document.getElementById("showGroupsButton").onclick = () => {
+    document.getElementById("groups-grid").classList.toggle("hidden");
+  };
+
+  backButton.onclick = () => {
+    if (current > 0) {
+      current--;
+      showQuestion();
+    } else {
+      quizContainer.classList.add("hidden");
+      progressBar.classList.add("hidden");
+      navButtons.classList.add("hidden");
+      startScreen.classList.remove("hidden");
+    }
+  };
+
+  nextButton.onclick = () => {
+    if (answers[current] == null) {
+      const warn = document.getElementById("warning");
+      if (warn) warn.classList.remove("hidden");
+      return;
+    }
+    current++;
+    if (current < questions.length) {
+      showQuestion();
+    } else {
+      showResult();
+    }
+  };
+
+  function showQuestion() {
+  quizContainer.innerHTML = `
+    <div class="question">${questions[current]}</div>
+    <div class="options">
+      ${[1, 2, 3, 4, 5].map((val, i) => `
+        <button class="option-btn" data-value="${val}">
+          ${["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"][i]}
+        </button>
+      `).join("")}
+    </div>
+    <p id="warning" class="warning hidden">Please select an option to continue.</p>
+  `;
+
+  updateProgress();
+
+  // Logic for button visibility
+  nextButton.classList.remove("hidden");
+  backButton.classList.toggle("hidden", current === 0);
+
+  // Keep selection if revisiting question
+  if (answers[current] != null) {
+    document.querySelectorAll(".option-btn").forEach(btn => {
+      if (Number(btn.dataset.value) === answers[current]) {
+        btn.classList.add("selected");
+      }
+    });
   }
+
+  document.querySelectorAll(".option-btn").forEach(btn => {
+    btn.onclick = () => {
+      answers[current] = Number(btn.dataset.value);
+      document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      document.getElementById("warning").classList.add("hidden");
+    };
+  });
 }
 
-function showResult() {
-  const average = score / questions.length;
-  let groupIndex;
-  if (average <= 2) {
-    groupIndex = 0;
-  } else if (average <= 3) {
-    groupIndex = 1;
-  } else if (average <= 4) {
-    groupIndex = 2;
-  } else {
-    groupIndex = 3;
+
+  function updateProgress() {
+    const percent = ((current) / questions.length) * 100;
+    progressFill.style.width = percent + "%";
   }
 
-  resultTitle.textContent = groups[groupIndex].label;
-  resultText.textContent = groups[groupIndex].summary;
+  function showResult() {
+    navButtons.classList.add("hidden");
+    backButton.classList.add("hidden");
+    nextButton.classList.add("hidden");
+    const avg = answers.reduce((a, b) => a + b, 0) / answers.length;
+    const index = Math.min(resultGroups.length - 1, Math.floor(avg / 5 * resultGroups.length));
+    const [title, desc] = resultGroups[index];
 
-  grid.innerHTML = groups
-    .map(g => `<div class="group"><h3>${g.label}</h3><p>${g.summary}</p></div>`)
-    .join('');
+    document.getElementById("result-title").textContent = title;
+    document.getElementById("result-text").textContent = desc;
 
-  resultSection.classList.remove('hidden');
-  container.innerHTML = '';
-}
+    const groupHTML = resultGroups.map(
+      ([name, text]) => `<div class="group"><h3>${name}</h3><p>${text}</p></div>`
+    ).join("");
+    document.getElementById("groups-grid").innerHTML = groupHTML;
+
+    saveHistory(title);
+    document.getElementById("attempts-count").textContent = JSON.parse(localStorage.getItem("quizHistory") || "[]").length;
+
+    quizContainer.classList.add("hidden");
+    resultSection.classList.remove("hidden");
+    progressBar.classList.add("hidden");
+    navButtons.classList.add("hidden");
+  }
+
+  function saveHistory(result) {
+    const history = JSON.parse(localStorage.getItem("quizHistory") || "[]");
+    history.push({ result });
+    localStorage.setItem("quizHistory", JSON.stringify(history));
+  }
+
+  function buildHistoryTable() {
+    const history = JSON.parse(localStorage.getItem("quizHistory") || "[]");
+    const table = document.getElementById("history-table");
+
+    table.innerHTML = `
+      <thead><tr><th>#</th><th>Result</th><th>Delete</th></tr></thead>
+      <tbody>
+        ${history.map((entry, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${entry.result}</td>
+            <td><button class="delete-btn" data-index="${index}">✕</button></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    `;
+
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+      btn.onclick = () => {
+        history.splice(Number(btn.dataset.index), 1);
+        localStorage.setItem("quizHistory", JSON.stringify(history));
+        buildHistoryTable();
+        document.getElementById("attempts-count").textContent = history.length;
+      };
+    });
+  }
+});

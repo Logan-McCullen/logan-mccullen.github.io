@@ -1,21 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Personality Grouping Quiz</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <button id="darkModeToggle" class="dark-toggle" title="Toggle Dark Mode">
+    <span class="toggle-symbol" id="darkSymbol">☀</span>
+  </button>
+
   <div class="quiz-wrapper">
-    <h1>Personality Grouping Quiz</h1>
-    <div id="quiz-container" class="center">
+    <h1 style="text-align: center;">Personality Grouping Quiz</h1>
+
+    <div id="start-screen" style="text-align: center;">
+      <p>Welcome! Take this quick quiz to find out what kind of thinker you are.</p>
       <button id="startButton" class="button">Start Quiz</button>
     </div>
+
+    <div class="progress-bar hidden"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div id="quiz-container" class="center hidden"></div>
+
+    <div class="quiz-nav hidden" id="quiz-nav-buttons">
+  <div style="flex: 1; text-align: left;">
+    <button id="backButton" class="button hidden">Back</button>
+  </div>
+  <div style="flex: 1; text-align: right;">
+    <button id="nextButton" class="button hidden">Next</button>
+  </div>
+</div>
+
+
     <div id="result-section" class="hidden">
       <h2 id="result-title"></h2>
       <p id="result-text"></p>
-      <div id="groups-grid" class="grid"></div>
+      <p style="font-size: 0.9em; color: gray; margin-top: 4px;">* These results are only estimates and not scientifically accurate.</p>
+      <button id="showGroupsButton" class="button">View All Groups</button>
+      <div id="groups-grid" class="grid hidden"></div>
+      <div class="center" style="margin-top:20px;">
+        <button id="retakeButton" class="button">Retake Quiz</button>
+        <button id="historyButton" class="button">View History</button>
+      </div>
+      <p class="center" style="margin-top:12px;">Attempts taken: <span id="attempts-count">0</span></p>
+      <table id="history-table" class="hidden"></table>
     </div>
   </div>
 
