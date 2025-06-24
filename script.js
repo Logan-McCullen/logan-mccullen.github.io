@@ -1,3 +1,4 @@
+/* script.js */
 const questions = [
   {
     text: 'I feel energized after social gatherings.',
@@ -104,6 +105,7 @@ function startQuiz() {
   currentQuestion = 0;
   score = 0;
   resultSection.classList.add('hidden');
+  container.classList.remove('center');
   showQuestion();
 }
 
@@ -113,9 +115,7 @@ function showQuestion() {
     <div class="progress">Question ${currentQuestion + 1} of ${questions.length}</div>
     <div class="question">${q.text}</div>
     <ul class="options">
-      ${q.options
-        .map((o, i) => `<li><label><input type="radio" name="option" value="${o.value}"> ${o.text}</label></li>`)
-        .join('')}
+      ${q.options.map(o => `<li><label><input type="radio" name="option" value="${o.value}"> ${o.text}</label></li>`).join('')}
     </ul>
     <button id="nextButton" class="button">${currentQuestion === questions.length - 1 ? 'Submit' : 'Next'}</button>
   `;
@@ -154,7 +154,7 @@ function showResult() {
   resultText.textContent = groups[groupIndex].summary;
 
   grid.innerHTML = groups
-    .map(g => `<div class="group"><h3>${g.label}</h3><p>${g.summary}</p><a href="#">Learn more</a></div>`)
+    .map(g => `<div class="group"><h3>${g.label}</h3><p>${g.summary}</p></div>`)
     .join('');
 
   resultSection.classList.remove('hidden');
